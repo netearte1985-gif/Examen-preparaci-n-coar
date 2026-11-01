@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#142b4a">
+<title>Examen de Ciencia y Tecnología | Preparación COAR</title>
+<style>
+:root{--navy:#142b4a;--blue:#2367a8;--cyan:#dff5f4;--ink:#172536;--muted:#637386;--line:#dce4ec;--bg:#f3f6fa;--green:#16845b;--red:#c43d4b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.wrap{max-width:850px;margin:0 auto;padding:20px 14px 48px}.brand{background:linear-gradient(120deg,#142b4a,#2367a8);color:white;padding:22px;border-radius:18px;margin-bottom:18px}
+.brand small{letter-spacing:.12em;text-transform:uppercase;opacity:.8;font-weight:700}.brand h1{font-size:clamp(22px,5vw,32px);margin:8px 0}.brand p{margin:0;color:#e3edf8}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 8px 24px #142b4a0b}
+label{display:block;font-weight:700;margin:14px 0 7px}input{width:100%;padding:14px;border:1px solid #bdcbd9;border-radius:10px;font:inherit}
+button{border:0;border-radius:11px;padding:13px 18px;font:inherit;font-weight:750;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:#eaf1f8;color:var(--navy)}.danger{background:#fff0f1;color:var(--red)}
+button:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}.tile{background:#f3f7fb;border-radius:12px;padding:12px;text-align:center}.tile b{display:block;font-size:19px;color:var(--navy)}.tile span{font-size:12px;color:var(--muted)}
+.hidden{display:none!important}.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-size:14px;margin-bottom:12px}
+.timer{font-weight:800;color:var(--navy);background:#edf4fb;padding:8px 12px;border-radius:9px;font-variant-numeric:tabular-nums}
+.progress{height:9px;background:#e7edf3;border-radius:20px;overflow:hidden;margin:10px 0 20px}.bar{height:100%;background:#2a9d8f;width:0;transition:width .2s}
+.tag{display:inline-block;background:var(--cyan);color:#146c69;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:800;margin-bottom:10px}
+.qtitle{font-size:19px;line-height:1.5;font-weight:750;margin:5px 0 18px}
+.option{display:flex;gap:12px;align-items:flex-start;padding:13px;border:1.5px solid var(--line);border-radius:12px;margin:9px 0;cursor:pointer;line-height:1.4}
+.option input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--blue);flex:0 0 auto}
+.option:has(input:checked){border-color:var(--blue);background:#f0f6fc}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:22px}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:7px;margin:15px 0}.num{padding:9px 0;background:#edf1f5;color:#526274}.num.done{background:#d9f1e8;color:#126c4a}.num.current{outline:2px solid var(--blue);background:#e6f0fb}
+.note{font-size:13px;color:var(--muted);line-height:1.5}
+.result-score{font-size:48px;font-weight:850;color:var(--navy);margin:4px 0}.review{border-top:1px solid var(--line);padding:15px 0}.correct{color:var(--green);font-weight:750}.wrong{color:var(--red);font-weight:750}
+@media(max-width:520px){.panel{padding:17px}.info{grid-template-columns:1fr 1fr}.grid{grid-template-columns:repeat(6,1fr)}.nav button{flex:1}.qtitle{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="brand">
+ <small>Preparación académica · COAR</small>
+ <h1>Examen de Ciencia y Tecnología</h1>
+ <p>La célula y la organización de los seres vivos</p>
+</header>
+
+<section id="start" class="panel">
+ <h2>Antes de comenzar</h2>
+ <p>Responde las 24 preguntas. Lee con atención cada enunciado y selecciona una sola alternativa. Podrás regresar y modificar tus respuestas antes de entregar.</p>
+ <div class="info">
+  <div class="tile"><b>24</b><span>Preguntas</span></div>
+  <div class="tile"><b>60 min</b><span>Tiempo límite</span></div>
+  <div class="tile"><b>0–20</b><span>Calificación</span></div>
+ </div>
+ <label for="student">Nombres y apellidos</label>
+ <input id="student" type="text" placeholder="Escribe tu nombre completo" autocomplete="name">
+ <p class="note">La calificación y la revisión se mostrarán en este dispositivo al terminar. No se enviarán a otras personas ni al creador del examen.</p>
+ <button class="primary" style="width:100%;margin-top:12px" id="begin">INICIAR EXAMEN</button>
+ <p class="note">Material basado en el PDF proporcionado. Algunas cifras o símbolos que no se distinguen claramente en el documento se han omitido para no inventar datos.</p>
+</section>
+
+<section id="exam" class="panel hidden">
+ <div class="topline"><span id="counter">Pregunta 1 de 24</span><span class="timer" id="timer">60:00</span></div>
+ <div class="progress"><div class="bar" id="bar"></div></div>
+ <div class="tag" id="block">Bloque 1</div>
+ <div class="qtitle" id="question"></div>
+ <div id="options"></div>
+ <div class="row" style="margin-top:18px"><span class="note" id="answered">Respondidas: 0 de 24</span><button class="secondary" id="finishTop">Finalizar examen</button></div>
+ <div class="nav"><button class="secondary" id="prev">← Anterior</button><button class="primary" id="next">Siguiente →</button></div>
+ <h3 style="margin:24px 0 6px">Navegación de preguntas</h3>
+ <div class="grid" id="numbers"></div>
+ <p class="note">Los números verdes indican preguntas respondidas. Puedes pulsarlos para ir directamente a una pregunta.</p>
+</section>
+
+<section id="results" class="panel hidden">
+ <div class="tag">Examen finalizado</div>
+ <h2 id="greeting">Resultado</h2>
+ <div class="result-score" id="score">0/20</div>
+ <p id="summary"></p>
+ <div class="info">
+  <div class="tile"><b id="correctCount">0</b><span>Correctas</span></div>
+  <div class="tile"><b id="wrongCount">0</b><span>Incorrectas</span></div>
+  <div class="tile"><b id="blankCount">0</b><span>Sin responder</span></div>
+ </div>
+ <p><b>Tiempo utilizado:</b> <span id="elapsed"></span></p>
+ <button class="secondary" id="toggleReview">VER CORRECCIÓN Y EXPLICACIONES</button>
+ <div id="review" class="hidden" style="margin-top:15px"></div>
+ <p class="note">Este resultado es personal y se muestra únicamente en esta sesión del navegador. Si cierras o recargas la página, no se enviará una copia a nadie.</p>
+ <button class="primary" onclick="window.print()">Imprimir / Guardar resultado en PDF</button>
+</section>
+</div>
+<script>
+const questions = [
+{b:"Bloque 1 · Teoría celular",q:"En un experimento, un caldo estéril permanece sin microorganismos en un frasco sellado, mientras que un frasco abierto presenta turbidez y microorganismos. ¿Qué postulado se respalda directamente?",o:["La célula es exclusivamente la unidad anatómica de los organismos pluricelulares.","Toda célula proviene de otra célula viva preexistente.","Las células transmiten ADN de una generación a otra.","El metabolismo ocurre sin intervención del medio exterior.","Todos los seres vivos están conformados por tejidos."],a:1,e:"El resultado respalda la unidad de origen: los microorganismos proceden de células preexistentes y no aparecen espontáneamente del caldo."},
+{b:"Bloque 1 · Teoría celular",q:"Los virus poseen ADN o ARN y una cubierta proteica, pero carecen de metabolismo propio y no se multiplican sin una célula hospedadora. Desde la teoría celular estricta, ¿por qué no se consideran seres vivos celulares?",o:["Porque su material genético no está compuesto por nucleótidos.","Porque su tamaño les impide atravesar membranas.","Porque carecen de organización celular básica y metabolismo autónomo.","Porque se reproducen sexualmente mediante plásmidos.","Porque solo infectan vertebrados."],a:2,e:"Los virus son acelulares: no poseen la organización ni el metabolismo autónomo propios de una célula."},
+{b:"Bloque 1 · Teoría celular",q:"Un paciente recibe un injerto de células epiteliales propias cultivadas in vitro y su piel se regenera. ¿Qué principio explica el éxito de esta terapia?",o:["Las células del injerto producen queratina al descomponer el plasma.","Las células epiteliales se dividen conservando la función y el linaje del tejido original.","El colágeno expuesto se transforma espontáneamente en células.","Los leucocitos se convierten en células epidérmicas.","Las células mutan por absorber oxígeno atmosférico."],a:1,e:"Las células proceden de células previas y se multiplican conservando su información genética y sus funciones tisulares."},
+{b:"Bloque 2 · Forma y tamaño celular",q:"Dos células cúbicas de distinto tamaño se sumergen en un colorante difusible. ¿Cuál absorberá el colorante hasta su centro en menor tiempo y por qué?",o:["La más grande, porque tiene mayor volumen.","La más pequeña, porque presenta mayor relación superficie-volumen.","Ambas al mismo tiempo, porque la difusión no depende del tamaño.","La más grande, por su presión hidrostática.","La más pequeña solo si utiliza bombas de transporte activo."],a:1,e:"Una célula pequeña tiene mayor relación superficie-volumen y una distancia relativa de difusión menor."},
+{b:"Bloque 2 · Forma y tamaño celular",q:"En la anemia falciforme, los glóbulos rojos adoptan una forma rígida de medialuna en vez de su forma bicóncava. ¿Qué consecuencia funcional inmediata puede producirse?",o:["Aumento patológico de la filtración glomerular.","Obstrucción de capilares y menor capacidad de transportar oxígeno.","Mayor afinidad de la hemoglobina por el dióxido de carbono.","Destrucción no selectiva de leucocitos.","Formación espontánea de músculo liso en las venas."],a:1,e:"Los eritrocitos falciformes rígidos pueden atascarse en capilares y dificultar el transporte de oxígeno."},
+{b:"Bloque 2 · Forma y tamaño celular",q:"Se registran tres tipos celulares: Tipo 1, esférico con microvellosidades; Tipo 2, fusiforme y alargado; Tipo 3, disco bicóncavo y anucleado. ¿A qué corresponden respectivamente?",o:["Miocito, eritrocito y neurona.","Célula intestinal, fibra muscular lisa y eritrocito humano.","Osteocito, adipocito y bacteria espirilar.","Plasmocito, neurona motora y célula epidérmica.","Macrófago, espermatozoide y célula vegetal conductora."],a:1,e:"Las microvellosidades son características de células intestinales absorbentes; la forma fusiforme corresponde al músculo liso y el disco bicóncavo anucleado al eritrocito."},
+{b:"Bloque 3 · Microscopios",q:"Se desea registrar en video el desplazamiento y la captura de alimento mediante pseudópodos en una ameba viva. ¿Qué instrumento debe seleccionarse?",o:["Microscopio electrónico de transmisión (MET).","Microscopio electrónico de barrido (MEB).","Microscopio óptico compuesto, con campo claro o contraste de fases.","Lupa estereoscópica simple.","Cámara de difracción de rayos X."],a:2,e:"El microscopio óptico permite observar muestras vivas e hidratadas. El microscopio electrónico requiere condiciones incompatibles con una célula viva."},
+{b:"Bloque 3 · Microscopios",q:"Un patólogo necesita analizar la ultraestructura interna de las crestas mitocondriales y los poros nucleares en cortes ultrafinos. ¿Qué equipo es el adecuado?",o:["Microscopía óptica con objetivo de inmersión.","Microscopía electrónica de transmisión (MET).","Microscopía electrónica de barrido (MEB).","Microscopía ultravioleta con tinción de Gram.","Lupa binocular."],a:1,e:"El MET permite observar estructuras internas muy pequeñas en cortes ultrafinos y ofrece resolución nanométrica."},
+{b:"Bloque 3 · Microscopios",q:"En un microscopio óptico compuesto se utiliza un ocular de 10× y un objetivo de 40×. ¿Cuál es el aumento total?",o:["50×","300×","400×","4000×","40×"],a:2,e:"El aumento total se calcula multiplicando ocular por objetivo: 10 × 40 = 400 aumentos."},
+{b:"Bloque 4 · Componentes comunes",q:"Una muestra presenta una bicapa lipídica con permeabilidad diferencial, polímeros con información, complejos que sintetizan polipéptidos y un medio acuoso interno. ¿Qué conclusión sustentan estos hallazgos?",o:["Son agregados minerales inorgánicos.","Presentan los cuatro componentes organizacionales universales de una entidad celular.","Son necesariamente células vegetales.","Son virus capsulados.","Son colonias de protozoarios ciliados."],a:1,e:"Los componentes descritos corresponden a membrana plasmática, material genético, ribosomas y citoplasma."},
+{b:"Bloque 4 · Componentes comunes",q:"Un antibiótico inhibe selectivamente la subunidad mayor de los ribosomas bacterianos. ¿Qué proceso queda directamente bloqueado?",o:["La replicación semiconservativa del ADN.","La síntesis y el ensamblaje de nuevas proteínas.","La entrada pasiva de agua por acuaporinas.","La respiración anaeróbica en la pared celular.","La duplicación del huso mitótico."],a:1,e:"Los ribosomas realizan la traducción y ensamblan aminoácidos para formar proteínas."},
+{b:"Bloque 4 · Componentes comunes",q:"Los glóbulos rojos se introducen en agua destilada y se hinchan hasta romperse. ¿Qué propiedad de la membrana plasmática evidencia este fenómeno?",o:["Es completamente impermeable al agua.","Es semipermeable y permite la entrada neta de agua hacia el interior más concentrado.","Expulsa sales mediante transporte activo destructivo.","Transforma fosfolípidos en glucógeno.","Carece de proteínas receptoras."],a:1,e:"En un medio hipotónico el agua entra por ósmosis. El eritrocito, al no tener pared celular rígida, puede sufrir lisis."},
+{b:"Bloque 5 · Procariotas y eucariotas",q:"La penicilina inhibe la enzima que sintetiza el peptidoglicano de la pared bacteriana. ¿Por qué no causa daño directo a las células humanas?",o:["Porque las células humanas son procariotas resistentes.","Porque son eucariotas y carecen de pared celular de peptidoglicano.","Porque sus ribosomas degradan la penicilina.","Porque el fármaco solo actúa a bajas temperaturas.","Porque poseen una pared de quitina."],a:1,e:"El peptidoglicano es propio de la pared bacteriana y está ausente en las células humanas."},
+{b:"Bloque 5 · Procariotas y eucariotas",q:"Un organismo unicelular presenta ADN circular libre en el citoplasma, ribosomas bacterianos, flagelos bacterianos y ausencia de núcleo y mitocondrias. ¿Cómo debe clasificarse?",o:["Célula eucariota animal.","Célula eucariota vegetal.","Célula procariota (bacteria).","Hongo unicelular.","Espora de angiosperma acuática."],a:2,e:"El ADN circular en el nucleoide y la ausencia de núcleo y organelos membranosos son características procariotas."},
+{b:"Bloque 5 · Procariotas y eucariotas",q:"¿Qué evidencia bioquímica respalda con mayor solidez la teoría endosimbiótica sobre el origen de mitocondrias y cloroplastos?",o:["Poseen ADN circular propio y ribosomas similares a los bacterianos.","Se transforman espontáneamente en núcleos.","Los cloroplastos carecen de doble membrana.","Se replican por mitosis con huso acromático.","Sus enzimas se sintetizan exclusivamente en el aparato de Golgi."],a:0,e:"El ADN circular propio y los ribosomas de tipo bacteriano son evidencias de un origen endosimbiótico."},
+{b:"Bloque 6 · Gérmenes y enfermedades",q:"En el experimento de Pasteur, el caldo hervido de un matraz con cuello de cisne permaneció sin microbios aunque entraba aire. ¿Qué impidió la proliferación microbiana?",o:["El calor residual evaporaba las bacterias.","El polvo y las esporas quedaban retenidos en la curvatura del cuello.","La falta total de oxígeno asfixiaba a los microbios.","Se añadieron desinfectantes al caldo.","La radiación ultravioleta esterilizaba el líquido."],a:1,e:"La curvatura retenía partículas de polvo y microorganismos, aunque permitía el intercambio de aire."},
+{b:"Bloque 6 · Gérmenes y enfermedades",q:"Semmelweis observó que la fiebre puerperal disminuía cuando los médicos se lavaban las manos con agua clorada después de realizar autopsias. ¿Cuál es la explicación científica?",o:["El cloro neutralizaba gases miasmáticos.","El lavado destruía o inactivaba gérmenes en las manos e interrumpía la transmisión.","El cloro anestesiaba a los recién nacidos.","La temperatura del agua aceleraba la coagulación.","Se eliminaba ácido úrico de la piel."],a:1,e:"La higiene de manos reducía la transmisión de microorganismos patógenos desde los médicos hacia las pacientes."},
+{b:"Bloque 6 · Gérmenes y enfermedades",q:"Para comprobar si una bacteria causa marchitez en plantas de papa siguiendo los postulados de Koch, ¿qué procedimiento es imprescindible?",o:["Fumigar la chacra y observar si sobreviven las plantas.","Aislar la bacteria de plantas enfermas, cultivarla, inocularla en plantas sanas y comprobar que aparece la enfermedad.","Regar plantas afectadas con agua hervida.","Secar las hojas y observar su color.","Cruzar plantas enfermas con variedades silvestres."],a:1,e:"Los postulados de Koch requieren aislar y cultivar el agente, inocularlo en un huésped sano y reproducir la enfermedad."},
+{b:"Bloque 7 · Células animales y vegetales",q:"Células de elodea y eritrocitos se colocan en agua destilada. Los eritrocitos se rompen, pero las células vegetales se hinchan y conservan su integridad. ¿Qué estructura explica la diferencia?",o:["Los cloroplastos expulsan el agua.","La pared celular rígida de celulosa resiste la presión de turgencia.","Las células vegetales carecen de fosfolípidos.","Los centriolos anclan la vacuola.","El almidón sale para igualar presiones."],a:1,e:"La pared celular de celulosa ofrece resistencia mecánica y evita que la célula vegetal estalle al entrar agua."},
+{b:"Bloque 7 · Células animales y vegetales",q:"Un herbicida inhibe la cadena de transporte de electrones en los tilacoides. ¿Por qué afecta a las malezas, pero no actúa directamente sobre las células de las vacas?",o:["Las vacas degradan todo pesticida en los riñones.","Las células animales carecen de cloroplastos y no realizan fotofosforilación.","La pared vegetal absorbe toxinas más rápido.","Las células animales usan clorofila tipo C.","Las vacas tienen queratina en la mucosa estomacal."],a:1,e:"Las células animales no poseen cloroplastos ni tilacoides, estructuras donde ocurre la fase luminosa de la fotosíntesis."},
+{b:"Bloque 7 · Células animales y vegetales",q:"Una muestra presenta paredes poligonales, grandes cavidades centrales y corpúsculos verdes. Otra muestra tiene bordes redondeados e irregulares y no presenta pigmentos verdes. ¿Cuál es la conclusión correcta?",o:["La primera es epidermis bucal y la segunda hoja de lechuga.","La primera es tejido foliar vegetal y la segunda tejido animal.","La primera son bacterias y la segunda mohos.","Ambas son vegetales en distintas etapas mitóticas.","Ambas son tejidos animales."],a:1,e:"La pared celular, los cloroplastos y la gran vacuola identifican células vegetales; la segunda muestra corresponde a tejido animal."},
+{b:"Bloque 8 · Niveles de organización",q:"La sangre contiene plasma, eritrocitos, leucocitos y plaquetas que cooperan en transporte y defensa. ¿A qué nivel de organización corresponde?",o:["Nivel celular.","Nivel tisular (tejido conectivo especializado).","Nivel orgánico.","Nivel molecular.","Nivel de sistema."],a:1,e:"La sangre es un tejido conectivo especializado: contiene células y una matriz extracelular líquida llamada plasma."},
+{b:"Bloque 8 · Niveles de organización",q:"Los pulgones dañan el floema de una planta de tomate e impiden distribuir sacarosa hacia las raíces. Las raíces mueren y la planta colapsa. ¿Qué principio explica el desenlace?",o:["Las células de la raíz son independientes de las hojas.","El fallo de un tejido conductor compromete un órgano y la supervivencia del organismo.","Las hojas son el nivel sistémico y las raíces son agrupaciones atómicas.","La fotosíntesis cesa porque el xilema deja de recibir oxígeno de los pulgones.","Los órganos vegetales no dependen entre sí."],a:1,e:"Los niveles de organización son interdependientes: el daño al floema afecta el suministro de nutrientes a las raíces y al organismo."},
+{b:"Bloque 8 · Niveles de organización",q:"Completa la analogía: Corazón y vasos sanguíneos : sistema circulatorio :: raíz, tallo, xilema y floema : ______.",o:["Sistema fotosintético de asimilación de nitrógeno.","Sistema vascular o de transporte de fluidos en plantas.","Nivel tisular meristemático secundario.","Aparato reproductor estaminal.","Tejido tegumentario suberoso."],a:1,e:"La raíz y el tallo, junto con xilema y floema, integran el sistema vascular vegetal, encargado del transporte."}
+];
+
+let current=0, answers=Array(questions.length).fill(null), remaining=3600, tick=null, startedAt=0, finished=false, userName="";
+const $=id=>document.getElementById(id);
+function show(id){$(id).classList.remove("hidden")} function hide(id){$(id).classList.add("hidden")}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function render(){
+ const q=questions[current]; $("counter").textContent=`Pregunta ${current+1} de ${questions.length}`;
+ $("block").textContent=q.b; $("question").textContent=q.q; $("timer").textContent=fmt(remaining);
+ $("bar").style.width=((current+1)/questions.length*100)+"%";
+ $("options").innerHTML=q.o.map((v,i)=>`<label class="option"><input type="radio" name="answer" value="${i}" ${answers[current]===i?"checked":""}><span><b>${"ABCDE"[i]})</b> ${v}</span></label>`).join("");
+ document.querySelectorAll('input[name="answer"]').forEach(el=>el.addEventListener("change",e=>{answers[current]=Number(e.target.value);updateNav()}));
+ $("prev").disabled=current===0; $("next").textContent=current===questions.length-1?"Ir a resultados →":"Siguiente →";
+ updateNav();
+}
+function updateNav(){
+ $("answered").textContent=`Respondidas: ${answers.filter(x=>x!==null).length} de ${questions.length}`;
+ $("numbers").innerHTML=questions.map((q,i)=>`<button class="num ${answers[i]!==null?"done":""} ${i===current?"current":""}" data-i="${i}">${i+1}</button>`).join("");
+ document.querySelectorAll(".num").forEach(btn=>btn.addEventListener("click",()=>{current=Number(btn.dataset.i);render()}));
+}
+function finish(auto=false){
+ if(finished)return;
+ const blanks=answers.filter(x=>x===null).length;
+ if(!auto&&!confirm(`¿Finalizar el examen? Tienes ${blanks} pregunta(s) sin responder.`))return;
+ finished=true;clearInterval(tick);
+ const correct=answers.reduce((n,a,i)=>n+(a===questions[i].a?1:0),0);
+ const wrong=answers.filter((a,i)=>a!==null&&a!==questions[i].a).length;
+ const grade=(correct/questions.length*20).toFixed(2);
+ hide("exam");show("results");
+ $("greeting").textContent=`Resultado de ${userName}`;
+ $("score").textContent=`${grade} / 20`;
+ $("summary").textContent=`Obtuviste ${correct} de ${questions.length} respuestas correctas (${Math.round(correct/questions.length*100)}%). ${auto?"El tiempo se agotó y el examen se cerró automáticamente.":"¡Examen completado!"}`;
+ $("correctCount").textContent=correct;$("wrongCount").textContent=wrong;$("blankCount").textContent=blanks;
+ $("elapsed").textContent=fmt(3600-remaining);
+ $("review").innerHTML=questions.map((q,i)=>{let ok=answers[i]===q.a;return `<div class="review"><b>${i+1}. ${q.q}</b><p class="${ok?"correct":answers[i]===null?"":"wrong"}">${answers[i]===null?"Sin responder":`Tu respuesta: ${"ABCDE"[answers[i]]}) ${q.o[answers[i]]}`}</p><p class="correct">Respuesta correcta: ${"ABCDE"[q.a]}) ${q.o[q.a]}</p><p class="note">${q.e}</p></div>`}).join("");
+}
+$("begin").addEventListener("click",()=>{
+ userName=$("student").value.trim();if(!userName){alert("Escribe tus nombres y apellidos para comenzar.");$("student").focus();return}
+ hide("start");show("exam");startedAt=Date.now();render();
+ tick=setInterval(()=>{remaining--; $("timer").textContent=fmt(remaining);if(remaining<=0)finish(true)},1000);
+});
+$("prev").addEventListener("click",()=>{if(current>0){current--;render()}});
+$("next").addEventListener("click",()=>{if(current<questions.length-1){current++;render()}else{finish(false)}});
+$("finishTop").addEventListener("click",()=>finish(false));
+$("toggleReview").addEventListener("click",()=>{ $("review").classList.toggle("hidden"); $("toggleReview").textContent=$("review").classList.contains("hidden")?"VER CORRECCIÓN Y EXPLICACIONES":"OCULTAR CORRECCIÓN"});
+</script>
+</body>
+</html>
