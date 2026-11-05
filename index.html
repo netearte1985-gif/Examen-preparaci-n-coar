@@ -2,29 +2,109 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#14243a">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Banco de exámenes</title>
 <style>
-:root{--navy:#14243a;--blue:#2457a6;--ink:#1f2937;--muted:#64748b;--bg:#f3f6fb}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-header{background:var(--navy);color:#fff;padding:34px 20px}.wrap{max-width:850px;margin:auto}
-h1{font-size:clamp(27px,5vw,38px);margin:0 0 8px}header p{margin:0;color:#dbe6f5;font-size:17px;line-height:1.5}
-main{max-width:850px;margin:28px auto;padding:0 16px 40px}.intro{color:var(--muted);margin:0 0 18px}
-.card{background:#fff;border:1px solid #dce3ec;border-radius:18px;padding:22px;margin:14px 0;box-shadow:0 5px 18px #14243a0d}
-.card h2{font-size:21px;margin:0 0 7px}.card p{color:var(--muted);margin:0 0 17px;line-height:1.5}
-a.btn{display:inline-block;background:var(--blue);color:white;text-decoration:none;font-weight:700;padding:13px 18px;border-radius:10px}
-.tag{display:inline-block;font-size:12px;font-weight:700;color:#2457a6;background:#eaf0fb;border-radius:30px;padding:5px 10px;margin-bottom:10px}
-footer{text-align:center;color:var(--muted);font-size:13px;padding:10px 20px 30px}
-</style></head>
+:root{--azul:#14243a;--fondo:#f1f4fa;--texto:#202938}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);font-family:Arial,sans-serif;color:var(--texto)}
+header{background:var(--azul);color:white;padding:38px 24px}
+header h1{font-size:36px;margin:0 0 14px}
+header p{font-size:19px;line-height:1.5;margin:0;color:#dce5f2}
+main{max-width:900px;margin:35px auto;padding:0 18px}
+h2{font-size:23px;color:#667386;font-weight:normal}
+.tarjeta{background:white;border:1px solid #dce2eb;border-radius:22px;padding:26px;margin:20px 0;box-shadow:0 5px 20px #00000008}
+.etiqueta{display:inline-block;background:#e9effb;color:#28558d;padding:9px 15px;border-radius:30px;font-weight:bold}
+.tarjeta h3{font-size:25px;margin:18px 0 10px}
+.tarjeta p{font-size:18px;color:#667386;line-height:1.5}
+.boton{display:inline-block;background:#28599e;color:white;text-decoration:none;padding:16px 24px;border-radius:12px;font-weight:bold;font-size:18px;margin-top:8px}
+.boton:active{opacity:.8}
+#estado{padding:20px;background:white;border-radius:12px;color:#667386}
+footer{text-align:center;padding:25px;color:#667386}
+</style>
+</head>
 <body>
-<header><div class="wrap"><h1>Banco de exámenes</h1>
-<p>Selecciona el examen que deseas desarrollar. Cada participante verá sus propios resultados en su dispositivo.</p></div></header>
-<main><p class="intro">Exámenes disponibles</p>
-<section class="card"><span class="tag">240 PREGUNTAS</span><h2>Inglés — AF-2027</h2>
-<p>Examen interactivo completo de 240 preguntas.</p>
-<a class="btn" href="examen_ingles_AF2027_240_preguntas.html">Abrir examen</a></section>
-<section class="card"><span class="tag">EXAMEN ANTERIOR</span><h2>Inglés — AF-2027</h2>
-<p>Versión anterior del examen interactivo.</p>
-<a class="btn" href="examen_interactivo_ingles_AF2027-1.html">Abrir examen anterior</a></section>
-</main><footer>Banco de exámenes · Página de acceso</footer></body></html>
+
+<header>
+<h1>Banco de exámenes</h1>
+<p>Selecciona el examen que deseas desarrollar. Cada participante verá sus propios resultados en su dispositivo.</p>
+</header>
+
+<main>
+<h2>Exámenes disponibles</h2>
+<div id="lista">
+<p id="estado">Buscando automáticamente los exámenes...</p>
+</div>
+</main>
+
+<footer>Banco de exámenes</footer>
+
+<script>
+async function cargarExamenes(){
+ const lista=document.getElementById("lista");
+ const owner=location.hostname.split(".")[0];
+ const repo=decodeURIComponent(location.pathname.split("/").filter(Boolean)[0]||"");
+
+ try{
+  const respuesta=await fetch(
+   `https://api.github.com/repos/${owner}/${encodeURIComponent(repo)}/contents/`
+  );
+
+  if(!respuesta.ok) throw new Error("No se pudo consultar el repositorio.");
+
+  const archivos=await respuesta.json();
+
+  const examenes=archivos.filter(a=>
+   a.type==="file" &&
+   a.name.toLowerCase().endsWith(".html") &&
+   a.name.toLowerCase()!=="index.html"
+  );
+
+  lista.innerHTML="";
+
+  if(examenes.length===0){
+   lista.innerHTML="<p id='estado'>Todavía no hay exámenes disponibles.</p>";
+   return;
+  }
+
+  examenes.sort((a,b)=>a.name.localeCompare(b.name,"es"));
+
+  examenes.forEach((archivo,i)=>{
+   const nombre=archivo.name
+    .replace(/\.html$/i,"")
+    .replace(/[_-]+/g," ")
+    .replace(/\s+/g," ")
+    .trim();
+
+   const tarjeta=document.createElement("section");
+   tarjeta.className="tarjeta";
+
+   const etiqueta=document.createElement("span");
+   etiqueta.className="etiqueta";
+   etiqueta.textContent="EXAMEN "+(i+1);
+
+   const titulo=document.createElement("h3");
+   titulo.textContent=nombre;
+
+   const descripcion=document.createElement("p");
+   descripcion.textContent="Examen interactivo disponible.";
+
+   const enlace=document.createElement("a");
+   enlace.className="boton";
+   enlace.href="./"+encodeURIComponent(archivo.name);
+   enlace.textContent="Abrir examen";
+
+   tarjeta.append(etiqueta,titulo,descripcion,enlace);
+   lista.appendChild(tarjeta);
+  });
+
+ }catch(error){
+  lista.innerHTML="<p id='estado'>No se pudieron cargar los exámenes. Comprueba tu conexión e inténtalo nuevamente.</p>";
+ }
+}
+
+cargarExamenes();
+</script>
+
+</body>
+</html>
