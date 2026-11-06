@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#17365d">
+<title>Balotario CAS N.º 064-2026</title>
+<style>
+:root{--navy:#17365d;--blue:#2864a5;--pale:#edf3fb;--ink:#202938;--muted:#657386;--line:#d8e0e9;--good:#18794e;--bad:#b42318;--gold:#8a6100}
+*{box-sizing:border-box}body{margin:0;background:#f2f5f9;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+.wrap{max-width:850px;margin:auto;padding:20px 15px 40px}
+header{background:var(--navy);color:white;padding:25px 20px;border-radius:0 0 18px 18px;margin:0 auto 22px;max-width:850px}
+header h1{font-size:clamp(22px,5vw,30px);margin:0 0 8px}header p{margin:0;color:#dce7f5}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 5px 20px #17365d0c}
+label{display:block;font-weight:700;margin:0 0 9px}
+input[type=text]{width:100%;padding:15px;border:1px solid #aebdce;border-radius:11px;font-size:17px;margin-bottom:18px}
+button{border:0;border-radius:11px;padding:14px 19px;font-size:16px;font-weight:700;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}.primary{background:var(--blue);color:white}.secondary{background:#e8eef6;color:var(--navy)}.danger{background:#fbe9e7;color:#9b1c13}
+.hidden{display:none!important}.topline{display:flex;justify-content:space-between;gap:12px;align-items:center;color:var(--muted);font-weight:700;font-size:17px}
+.track{height:10px;background:#e5eaf0;border-radius:20px;overflow:hidden;margin:17px 0 25px}.fill{height:100%;background:var(--blue);width:0}
+.qtext{font-size:clamp(19px,4.5vw,25px);line-height:1.45;font-weight:700;margin:0 0 22px}
+.options{display:grid;gap:11px}.option{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--line);border-radius:14px;padding:15px;cursor:pointer;font-size:17px;line-height:1.4}
+.option input{margin-top:5px;transform:scale(1.25);accent-color:var(--blue)}.option.selected{border:2px solid var(--blue);background:var(--pale);padding:14px}
+.feedback{margin-top:18px;padding:16px;border-radius:12px;line-height:1.5}.correct{background:#e8f6ef;border:1px solid #a9dfc2}.incorrect{background:#fff0ee;border:1px solid #f1b5ae}.pending{background:#fff7df;border:1px solid #ead18a}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.meta{font-size:13px;color:var(--muted);margin-top:16px}
+.result-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}.stat{background:#f5f7fa;border-radius:12px;padding:13px}.stat strong{display:block;font-size:23px;margin-top:4px}
+.review-item{padding:16px 0;border-bottom:1px solid var(--line);line-height:1.5}.review-item h3{font-size:17px}.tag{display:inline-block;border-radius:20px;padding:4px 9px;background:#edf1f6;font-size:12px;font-weight:700}
+@media(max-width:520px){.wrap{padding:14px 12px 30px}.panel{padding:17px}.option{font-size:16px}.actions button{width:100%}.result-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<header><h1>Balotario CAS N.º 064-2026</h1><p>Evaluación interactiva · 25 preguntas en el orden original</p></header>
+<main class="wrap">
+<section id="start" class="panel">
+<label for="student">Nombres y apellidos del estudiante</label>
+<input id="student" type="text" autocomplete="name" placeholder="Escribe tu nombre completo">
+<button class="primary" id="begin">COMENZAR EXAMEN</button>
+<p class="meta">El examen contiene las 25 preguntas del documento. Las alternativas que aparecen destacadas en negrita en el PDF se han registrado como respuestas correctas.</p>
+</section>
+<section id="exam" class="panel hidden">
+<div class="topline"><span id="progressText">Pregunta 1 de 25</span><span id="clock">00:00</span></div>
+<div class="track"><div class="fill" id="bar"></div></div>
+<div class="tag" id="pageTag"></div>
+<h2 class="qtext" id="question"></h2>
+<div class="options" id="options"></div>
+<div id="feedback" class="feedback hidden"></div>
+<div class="actions">
+<button class="primary" id="check">COMPROBAR RESPUESTA</button>
+<button class="primary hidden" id="next">SIGUIENTE PREGUNTA</button>
+</div>
+<p class="meta" id="topic"></p>
+</section>
+<section id="results" class="panel hidden">
+<h2>Resultado del examen</h2><p id="studentResult"></p>
+<div class="result-grid" id="stats"></div>
+<p id="scoreLine"></p>
+<div class="actions">
+<button class="primary" id="reviewBtn">REVISAR MIS RESPUESTAS</button>
+<button class="secondary" id="retryBtn">VOLVER A REALIZAR EL EXAMEN</button>
+<button class="danger" id="finishBtn">FINALIZAR</button>
+</div>
+<div id="review" class="hidden"></div>
+</section>
+</main>
+<script>
+const questions = [
+{n:1,page:1,topic:"Ordenamiento pesquero",q:"El ................................. es el conjunto de normas y acciones que permiten administrar una pesquería, sobre la base del conocimiento",o:["Reglamento de la ley pesquera","Decreto Legislativo N° 1084","Ordenamiento pesquero","Reglamento de la ley general pesquera","Todas son verdaderas"],k:2},
+{n:2,page:1,topic:"Clasificación de la extracción pesquera",q:"De acuerdo a la Ley General de Pesca, la extracción en el ámbito marino de recursos hidrobiológicos se clasifica en:",o:["Menor escala y mayor escala","No comercial y de subsistencia","Pesca sin fines de lucro y Comercial","De investigación científica, artesanal, menor y mayor escala","Todas son verdaderas"],k:2},
+{n:3,page:1,topic:"Recursos hidrobiológicos inexplotados",q:"Respecto a los recursos hidrobiológicos inexplotados, el Reglamento de la Ley General de Pesca señala que la ejecución de pescas exploratorias y experimentales debe realizarse en un plazo máximo de veinticuatro meses:",o:["Verdadero","Falso"],k:1},
+{n:4,page:1,topic:"Límite Máximo de Captura por Embarcación",q:"El cálculo del Límite Máximo de Captura por Embarcación se realizará para cada dos temporadas de pesca, en función al PMCE asignado a cada Embarcación",o:["Verdadero","Falso"],k:0},
+{n:5,page:1,topic:"Autorizaciones de incremento de flota",q:"Las autorizaciones de incremento de flota pueden ejecutarse en un plazo no mayor a 18 meses, los mismos que pueden ser ampliados por única vez en:",o:["18 meses","12 meses","6 meses","9 meses","NA"],k:0},
+{n:6,page:1,topic:"Ampliación de plazo de incremento de flota",q:"¿Cuál es el plazo de atención para el procedimiento de ampliación de plazo para la ejecución de la autorización de incremento de flota?",o:["De 20 días hábiles","Silencio positivo","De aprobación automática","De 15 días hábiles","Ninguna de las anteriores"],k:2},
+{n:7,page:1,topic:"Investigación pesquera especializada",q:"Las autorizaciones para efectuar investigación pesquera especializada, no podrán ser objeto de modificación posterior a la emisión del acto administrativo:",o:["Verdadero","Falso"],k:1},
+{n:8,page:1,topic:"Silencio administrativo negativo",q:"De acuerdo al Texto Único Ordenado de la Ley 27444, excepcionalmente, el silencio negativo es aplicable en los siguientes bienes jurídicos",o:["Patrimonio cultural de la nación","Recursos naturales","Medio ambiente","b) y c) son correctas","a), b) y c) son correctas"],k:4},
+{n:9,page:2,topic:"Autoridad Científica CITES",q:"El Decreto Supremo N° 030-2005-AG que aprueba “Reglamento para la Implementación de la Convención sobre el Comercio Internacional de Especies Amenazadas de Fauna y Flora Silvestre (CITES) en el Perú”, señala que el Ministerio de la Producción no es una Autoridad Científica CITES.",o:["Verdadero","Falso"],k:0},
+{n:10,page:2,topic:"Dictamen de adquisición legal",q:"El Ministerio de la Producción, como resultado de su evaluación de que el espécimen no haya sido obtenido en contravención de la legislación vigente, emite:",o:["Dictamen de Adquisición Legal","Resolución Directoral","Declaración Aduanera de Mercancías","Dictámenes de Extracción No Perjudicial","Ninguna de las anteriores"],k:0},
+{n:11,page:2,topic:"Cadena de custodia en procedimientos CITES",q:"¿Qué se entiende por cadena de custodia en el marco de los procedimientos CITES?",o:["Documentación cronológica de conformidad a las leyes y los registros aplicables, de las transacciones relativas a la extracción del medio silvestre de un espécimen y a las transferencias de propiedad subsiguientes.","Documento que sustenta el traslado de bienes desde el lugar de desembarque hasta el establecimiento final, cumpliendo con la normativa vigente.","Documento que declara la cantidad de producto que ha sido procesado por las plantas de procesamiento","Documento que sustenta la cantidad de producto que ha sido descargado en el desembarcadero pesquero artesanal y que se encuentra firmado por el patrón de la embarcación pesquera.","Ninguna de las anteriores"],k:0},
+{n:12,page:2,topic:"Certificados de Desembarque del Recurso Tiburón",q:"Para los permisos de exportación, solo se consideran los Certificados de Desembarque del Recurso Tiburón (CDT) que:",o:["Cuenten con fecha, hora y lugar de desembarque","Presenten datos completos del patrón o representante de la embarcación pesquera","Formen parte del Registro de Certificados de Desembarque del Recurso Tiburón","Describan el destino y responsable de la adquisición de los productos","Solo b) y c) son correctas"],k:2},
+{n:13,page:2,topic:"Emisión de Certificados de Desembarque Tiburón",q:"Los Certificados de Desembarque Tiburón (CDT) son emitidos por:",o:["Ministerio de la Producción","Desembarcaderos Pesqueros Artesanales","Direcciones Regionales de la Producción","Solo a) y c) son correctas","Solo a) y b) son correctas"],k:3},
+{n:14,page:2,topic:"Ordenamiento pesquero del recurso anchoveta",q:"En relación al D.S. 005-2017-PRODUCE, que aprueba el Reglamento de Ordenamiento Pesquero del Recurso Anchoveta para Consumo Humano Directo, se precisa que las bodegas deben de encontrarse totalmente insuladas y medios de preservación a bordo, ¿para qué tipo de embarcaciones se aplica dicho dispositivo?",o:["Embarcaciones industriales y de menor escala.","Embarcaciones artesanales y de menor escala.","Embarcaciones industriales.","Embarcaciones artesanales.","Embarcaciones de menor escala."],k:4},
+{n:15,page:2,topic:"Autorizaciones para investigación pesquera especializada",q:"Las autorizaciones para efectuar investigación pesquera especializadas, se otorgan por un plazo de hasta 24 meses renovables:",o:["Verdadero","Falso"],k:1},
+{n:16,page:2,topic:"Funciones de la Dirección de Extracción para Consumo Humano Directo e Indirecto",q:"La Dirección de Extracción para Consumo Humano Directo e Indirecto, tiene entre sus funciones lo siguiente:",o:["Administrar el registro de embarcaciones que efectúan actividades en altamar, en el marco de las medidas de ordenamiento pesquero de los organismos regionales a nivel internacional.","Evaluar el otorgamiento para la asociación o incorporación definitiva del porcentaje máximo de captura por embarcación asignado a otra embarcación.","Formular propuestas de normas, lineamientos y mecanismos para la promoción de la investigación, el desarrollo tecnológico y la innovación acuícola.","Validar los certificados de captura en el marco de la normativa vigente.","Desarrollar y coordinar acciones vinculadas a la Convención sobre el Comercio Internacional de Especies Amenazadas de Fauna y Flora Silvestres - CITES, en coordinación con el MINAM"],k:1},
+{n:17,page:3,topic:"Investigación pesquera especializada",q:"La investigación pesquera especializada, es una actividad que se realiza en el caso que:",o:["Se usen embarcaciones pesqueras","Se usen espacios acuáticos públicos","Se extraigan recursos hidrobiológicos","Operen plantas de procesamiento","Todas son correctas"],k:4},
+{n:18,page:3,topic:"Permisos y certificados CITES",q:"Los permisos y certificados CITES, pueden ser utilizados varias veces en tanto se encuentre vigente:",o:["Verdadero","Falso"],k:1},
+{n:19,page:3,topic:"Certificado de origen de especies hidrobiológicas CITES",q:"No forma parte de la documentación requerida para la emisión del CERTIFICADO DE ORIGEN DE ESPECIES HIDROBIOLÓGICAS COMPRENDIDAS EN EL APÉNDICE III DE LA “CONVENCIÓN CITES”:",o:["Copia del Certificado de Procedencia, en el cual conste los nombres científicos y las unidades de las especies a exportar, emitido por la Dirección Regional de la Producción o el que haga sus veces.","Declaración jurada en la cual el administrado da constancia de la cantidad de especímenes vivos que serán transportados.","Constancia de Extracción de conformidad con la legislación pesquera nacional vigente, en el cual conste como mínimo el número de certificado de procedencia y el número del permiso de pesca, emitido por la Dirección Regional de la Producción o el que haga sus veces.","En caso de importación: Copia del certificado de origen, permiso de exportación o certificado de reexportación CITES del país de procedencia","Todas son correctas."],k:1},
+{n:20,page:3,topic:"Autorización de incremento de flota",q:"¿Cuánto es la duración máxima del trámite para el procedimiento de autorización de incremento de flota ?",o:["De 15 días hábiles","De aprobación automática","De 30 días hábiles","De 20 días hábiles","Ninguna de las anteriores"],k:0},
+{n:21,page:3,topic:"Asociación o incorporación definitiva de PMCE",q:"El plazo máximo para solicitar la Asociación o incorporación definitiva de PMCE de una embarcación pesquera siniestrada es de:",o:["De 30 días","De 36 meses","De 09 meses","De 12 meses","De 18 meses"],k:3},
+{n:22,page:3,topic:"Principios del procedimiento administrativo",q:"Son principios del procedimiento administrativo contemplados en la Ley del Procedimiento Administrativo General:",o:["Participación, verdad material, eficacia, celeridad, presunción de veracidad","Non bis in idem, legalidad, debido procedimiento, razonabilidad, informalismo.","Impulso de oficio, verdad material, celeridad, legalidad, causa petita, causalidad.","Participación, verdad material, eficacia, disponibilidad, celeridad, tipicidad.","Ninguna"],k:0},
+{n:23,page:3,topic:"Validez del certificado de reexportación CITES",q:"La validez máxima del certificado de reexportación CITES es:",o:["De 15 días","De 6 meses","De 10 días","De 12 meses","De 24 meses"],k:1},
+{n:24,page:4,topic:"Dispositivo legal sobre procedimientos vinculados a especies hidrobiológicas CITES",q:"¿Cuál es el dispositivo legal que establece las disposiciones sobre los procedimientos vinculados a especies hidrobiológicas provenientes de la actividad pesquera incluidas en los Apéndices de la Convención sobre el Comercio Internacional de Especies Amenazadas de Fauna y Flora Silvestres (CITES)?",o:["Decreto Supremo N° 004-2025-MINAM y su modificatoria Decreto Supremo N° 009-2026-MINAM.","Decreto Supremo N° 004-2025-PRODUCE y su modificatoria Decreto Supremo N° 009-2026-PRODUCE","Resolución Directoral N° 004-2025-MINAM","Resolución Ministerial N° 004-2025-PRODUCE y su modificatoria Resolución Ministerial N° 009-2026-PRODUCE","Decreto Supremo N° 014-2025-PRODUCE y su modificatoria Decreto Supremo N° 009-2026-PRODUCE."],k:1},
+{n:25,page:4,topic:"Certificados de matrícula",q:"Respecto de los certificados de matrícula: El registro de matrícula de naves y artefactos navales tienen vigencia indeterminada, a condición de mantener los certificados estatutarios vigentes, incluidas las naves o artefactos navales que cuenten con exención temporal de los reconocimientos de acuerdo al artículo 657. En ese sentido, los certificados de matrícula no son objeto de refrenda o renovación.",o:["Verdadero","Falso"],k:0}
+];
+let idx=0, answers=[], checked=[], student="", attempt=1, startTime=0, timer=null, elapsed=0, reviewMode=false;
+const $=id=>document.getElementById(id);
+function saveHistory(summary){try{let h=JSON.parse(localStorage.getItem("cas064_history")||"[]");h.push(summary);localStorage.setItem("cas064_history",JSON.stringify(h));}catch(e){}}
+function startExam(retry=false){if(!retry){student=$("student").value.trim();if(!student){alert("Escribe tus nombres y apellidos para comenzar.");$("student").focus();return;}attempt=1;}else attempt++;
+idx=0;answers=Array(questions.length).fill(null);checked=Array(questions.length).fill(false);elapsed=0;startTime=Date.now();reviewMode=false;
+$("start").classList.add("hidden");$("results").classList.add("hidden");$("exam").classList.remove("hidden");$("review").classList.add("hidden");
+clearInterval(timer);timer=setInterval(()=>{$("clock").textContent=formatTime(Math.floor((Date.now()-startTime)/1000));},1000);render();}
+function formatTime(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
+function render(){const q=questions[idx];$("progressText").textContent=`Pregunta ${q.n} de ${questions.length}`;$("bar").style.width=((idx+1)/questions.length*100)+"%";$("pageTag").textContent=`Página ${q.page} del PDF · ${q.topic}`;$("question").textContent=q.n+". "+q.q;
+$("options").innerHTML="";q.o.forEach((v,j)=>{let lab=document.createElement("label");lab.className="option"+(answers[idx]===j?" selected":"");let inp=document.createElement("input");inp.type="radio";inp.name="answer";inp.value=j;inp.checked=answers[idx]===j;inp.disabled=checked[idx];inp.addEventListener("change",()=>{answers[idx]=j;renderOptions();});let span=document.createElement("span");span.textContent=String.fromCharCode(97+j)+") "+v;lab.append(inp,span);$("options").append(lab);});
+$("feedback").classList.add("hidden");$("check").classList.toggle("hidden",checked[idx]);$("next").classList.toggle("hidden",!checked[idx]);$("next").textContent=idx===questions.length-1?"VER RESULTADOS":"SIGUIENTE PREGUNTA";}
+function renderOptions(){let labs=$("options").querySelectorAll(".option");labs.forEach((l,j)=>{l.classList.toggle("selected",answers[idx]===j);});}
+function checkAnswer(){if(answers[idx]===null){alert("Selecciona una alternativa antes de comprobar.");return;}checked[idx]=true;const q=questions[idx],ok=answers[idx]===q.k;const fb=$("feedback");fb.className="feedback "+(ok?"correct":"incorrect");fb.innerHTML=`<strong>${ok?"¡Respuesta correcta!":"Respuesta incorrecta."}</strong><br>Respuesta correcta: <strong>${String.fromCharCode(97+q.k)}) ${escapeHTML(q.o[q.k])}</strong><br>El documento original no incluye una explicación para esta pregunta.<br><small>Referencia: Balotario CAS N.º 064-2026, pregunta ${q.n}, página ${q.page}.</small>`;fb.classList.remove("hidden");$("options").querySelectorAll("input").forEach(x=>x.disabled=true);$("check").classList.add("hidden");$("next").classList.remove("hidden");}
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function nextQuestion(){if(idx<questions.length-1){idx++;render();}else finishExam();}
+function finishExam(){if(!confirm("¿Deseas finalizar el examen y ver tu resultado?"))return;clearInterval(timer);elapsed=Math.floor((Date.now()-startTime)/1000);let correct=0,wrong=0,blank=0;questions.forEach((q,i)=>{if(answers[i]===null)blank++;else if(answers[i]===q.k)correct++;else wrong++;});let score=correct/questions.length*20,pct=correct/questions.length*100;
+let summary={student,date:new Date().toLocaleString("es-PE"),attempt,score:+score.toFixed(2),correct,wrong,blank,seconds:elapsed};saveHistory(summary);
+$("exam").classList.add("hidden");$("results").classList.remove("hidden");$("studentResult").textContent=`Estudiante: ${student} · Examen: Balotario CAS N.º 064-2026 · Intento: ${attempt}`;
+$("stats").innerHTML=[["Nota sobre 20",score.toFixed(2)],["Correctas",correct],["Incorrectas",wrong],["No respondidas",blank],["Pendientes de validación",0],["Porcentaje de aciertos",pct.toFixed(1)+"%"],["Tiempo empleado",formatTime(elapsed)],["Total de preguntas",questions.length]].map(a=>`<div class="stat">${a[0]}<strong>${a[1]}</strong></div>`).join("");
+$("scoreLine").textContent=`Calificación: (${correct} / ${questions.length}) × 20 = ${score.toFixed(2)}.`;
+}
+function showReview(){const r=$("review");r.classList.toggle("hidden");if(r.classList.contains("hidden"))return;r.innerHTML="<h2>Revisión de respuestas</h2>"+questions.map((q,i)=>{let chosen=answers[i]===null?"Sin responder":String.fromCharCode(97+answers[i])+") "+escapeHTML(q.o[answers[i]]);let correct=String.fromCharCode(97+q.k)+") "+escapeHTML(q.o[q.k]);return `<div class="review-item"><h3>${q.n}. ${escapeHTML(q.q)}</h3><p>Tu respuesta: ${chosen}</p><p>Respuesta correcta: <strong>${correct}</strong></p><p>El documento original no incluye una explicación para esta pregunta.</p><small>PDF, página ${q.page} · ${escapeHTML(q.topic)}</small></div>`;}).join("");}
+$("begin").addEventListener("click",()=>startExam());$("check").addEventListener("click",checkAnswer);$("next").addEventListener("click",nextQuestion);$("reviewBtn").addEventListener("click",showReview);$("retryBtn").addEventListener("click",()=>startExam(true));$("finishBtn").addEventListener("click",()=>{ $("results").classList.add("hidden");$("start").classList.remove("hidden");$("student").value="";});
+$("student").addEventListener("keydown",e=>{if(e.key==="Enter")startExam();});
+</script>
+</body></html>
